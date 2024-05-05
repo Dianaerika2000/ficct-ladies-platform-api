@@ -26,10 +26,7 @@ import { UserModule } from './user/user.module';
         logging: true,
         autoLoadEntities: true,
         synchronize: true,
-        cache: false,
-        /* ssl: {
-          rejectUnauthorized: false,
-        }, */
+        cache: false
       }),
     }),
     UserModule,
