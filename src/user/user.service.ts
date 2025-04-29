@@ -7,15 +7,18 @@ import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { RoleService } from '../role/role.service';
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private readonly roleService: RoleService,
   ){}
 
   async create(createUserDto: CreateUserDto) {
-    const { email, password, ...userData } = createUserDto;
+    const { email, password, roleId, ...userData } = createUserDto;
+    const role = await this.roleService.findOne(roleId);
 
     const userExists = await this.userRepository.findOneBy({ email });
     if (userExists) {
@@ -25,14 +28,17 @@ export class UserService {
     const user = this.userRepository.create({
       ...userData,
       email,
-      password: await bcrypt.hash(password, 10)
+      password: await bcrypt.hash(password, 10),
+      rol: role
     })
 
     return await this.userRepository.save(user);
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll(): Promise<User[]>{
+    return await this.userRepository.find({
+      where: { status: true },
+    });
   }
 
   async findOne(id: number) {
@@ -55,11 +61,23 @@ export class UserService {
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User>{
+    const user = await this.findOne(id);
+
+    Object.assign(user, updateUserDto);
+
+    if (updateUserDto.password) {
+      user.password = await bcrypt.hash(updateUserDto.password, 10);
+    }
+
+    return await this.userRepository.save(user);
   }
 
   async remove(id: number) {
-    return `This action removes a #${id} user`;
+    const user = await this.findOne(id);
+
+    user.status = false;
+
+    return await this.userRepository.save(user);
   }
 }
