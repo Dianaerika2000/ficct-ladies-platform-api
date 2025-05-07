@@ -1,4 +1,5 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Role } from "src/role/entities/role.entity";
+import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -29,4 +30,12 @@ export class User {
   checkFieldBeforeUpdate() {
     this.email = this.email.toLocaleLowerCase();
   }
+
+  @ManyToOne(
+    () => Role,
+    (rol) => rol.users,
+    {eager: true}
+  )
+  @JoinColumn({ name: 'rol_id'})
+  rol: Role;
 }
