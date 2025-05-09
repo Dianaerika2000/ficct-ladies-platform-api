@@ -1,6 +1,7 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Project } from "src/projects/entities/project.entity";
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity()
+@Entity() 
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -29,4 +30,7 @@ export class User {
   checkFieldBeforeUpdate() {
     this.email = this.email.toLocaleLowerCase();
   }
+
+  @OneToMany(() => Project, (project) => project.user)
+  projects: Project[];
 }
