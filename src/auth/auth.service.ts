@@ -15,16 +15,6 @@ export class AuthService {
     private jwtService: JwtService
   ){}
 
-  // async signUp(singupUserDto: SingupUserDto) { 
-  //   const user = await this.userService.create(singupUserDto);
-  //   const jwt = this.generateJwt({ email: user.email });
-    
-  //   return {
-  //     ...user,
-  //     access_token: jwt
-  //   }
-  // }
-
   async signIn(signinUserDto: SigninUserDto){
     const { email, password } = signinUserDto;
     
