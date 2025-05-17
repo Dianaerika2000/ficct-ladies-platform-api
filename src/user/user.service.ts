@@ -80,4 +80,8 @@ export class UserService {
 
     return await this.userRepository.save(user);
   }
+
+  async tryFindOneByEmail(email: string) {
+    return await this.userRepository.findOneBy({ email });
+  }
 }
